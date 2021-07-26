@@ -1,22 +1,32 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import axios from 'axios';
 import PersonForm from './components/PersonForm';
 import SearchFilter from './components/SearchFilter';
 import ContactList from './components/ContactList';
 import logo from './logo.svg';
 import './App.css';
 
+
 function App() {
 
     /* State */
-    const [persons, setPersons] = useState([
-        {name: 'Arto Hellas', number: '040-123456'},
-        {name: 'Ada Lovelace', number: '39-44-5323523'},
-        {name: 'Dan Abramov', number: '12-43-234345'},
-        {name: 'Mary Poppendieck', number: '39-23-6423122'}
-    ]);
+    const [persons, setPersons] = useState([]);
     const [newPerson, setNewPerson] = useState('');
     const [newNumber, setNewNumber] = useState('');
     const [filterName, setFilterName] = useState('');
+
+    /* Server Calls */
+
+    // Get server data
+    const hook = () => {
+        console.log('Effect stage')
+        axios.get('http://localhost:3001/persons').then(response => {
+            console.log('Promise fulfilled');
+            setPersons(response.data);
+        })
+    }
+
+    useEffect(hook, [])
 
     /* Functions*/
     const addPerson = () => {
@@ -58,7 +68,7 @@ function App() {
             <br/>
             <PersonForm handleSubmit={handleSubmit} handleNumberChange={handleNumberChange}
                         handlePersonChange={handlePersonChange} numberValue={newNumber} personValue={newPerson}/>
-           <ContactList filterName={filterName} persons={persons}/>
+            <ContactList filterName={filterName} persons={persons}/>
         </div>
     );
 }
